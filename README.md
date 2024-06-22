@@ -1,6 +1,6 @@
 # LoadingWindow
 
-Hit the ⭐ at our [repo]() if this helped!!!
+Hit the ⭐ at our [repo](https://github.com/LeeFuuChang/PyPi-LoadingWindow) if this helped!!!
 
 Developed by LeeFuuChang © 2024
 
