@@ -34,7 +34,7 @@ def fakeTask(loadingwindow: AbstractLoadingWindow, percentage):
 window = AbstractLoadingWindow()
 
 # define the tasks to load in a list
-tasksToLoad = [lambda p=i:fakeTask(window, 0.1, p) for i in range(101)]
+tasksToLoad = [lambda p=i:fakeTask(window, p) for i in range(101)]
 
 # Set the tasks to load
 window.setTasks(tasksToLoad)

@@ -28,7 +28,7 @@ window.setPadding(30, 30)
 window.setSplashArtPath("./LoadingWindow/default-loading-splash.png")
 
 # Set the tasks to load
-window.setTasks([lambda p=i:fakeTask(window, 0.1, p) for i in range(101)])
+window.setTasks([lambda p=i:fakeTask(window, p) for i in range(101)])
 
 # Set Tasks retries
 window.setRetries(3)
