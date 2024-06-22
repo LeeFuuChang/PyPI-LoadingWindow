@@ -96,6 +96,8 @@ Set Loading Window FrameRate
 AbstractLoadingWindow.setFrameRate(60)
 ```
 
+Set Loading Window's Icon
+> this only works after packing into an executable
 ```python
 AbstractLoadingWindow.setIconPath("./Path/To/Your/Icon")
 ```
