@@ -116,3 +116,8 @@ Set Tasks retries
 ```python
 AbstractLoadingWindow.setRetries(3)
 ```
+
+Set How long (in seconds) the loading windows stays after all tasks completed
+```python
+AbstractLoadingWindow.setPreserveTime(1)
+```

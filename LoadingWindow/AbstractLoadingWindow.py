@@ -24,7 +24,8 @@ class AbstractLoadingWindow(QWidget):
     appIconPath: str = os.path.join(os.path.dirname(__file__), "default-loading-icon.png")
     splashArtPath: str = os.path.join(os.path.dirname(__file__), "default-loading-splash.png")
 
-    retries = 3
+    retries: int = 3
+    preserveTime: int = 1
 
     width: int = 500
     height: int = 300
@@ -58,7 +59,8 @@ class AbstractLoadingWindow(QWidget):
     def exec_(self):
         self.show()
         self.loadNext()
-        sys.exit(self.__application.exec_())
+        self.__application.exec_()
+        del self.__application
 
 
     def setupComponents(self):
@@ -149,6 +151,10 @@ class AbstractLoadingWindow(QWidget):
         self.retries = retries
 
 
+    def setPreserveTime(self, t):
+        self.preserveTime = max(0, t)
+
+
     def displayLoadingStatus(self):
         self.LoadingStatus.setText(self.text)
         self.LoadingStatus.repaint()
@@ -171,8 +177,9 @@ class AbstractLoadingWindow(QWidget):
 
 
     def loadFinished(self):
-        time.sleep(1)
-        os._exit(0)
+        time.sleep(self.preserveTime)
+        self.deleteLater()
+        self.__application.quit()
 
 
     def closeEvent(self, e):
