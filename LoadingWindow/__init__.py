@@ -1,5 +1,5 @@
-from .AbstractLoadingWindow import AbstractLoadingWindow
+from .LoadingWindow import LoadingWindow
 
 __all__ = [
-    "AbstractLoadingWindow"
+    "LoadingWindow"
 ]

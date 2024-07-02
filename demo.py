@@ -1,8 +1,8 @@
-from LoadingWindow import AbstractLoadingWindow
+from LoadingWindow import LoadingWindow
 
 import time
 
-def fakeTask(loadingwindow: AbstractLoadingWindow, percentage):
+def fakeTask(loadingwindow: LoadingWindow, percentage):
     try:
         loadingwindow.text = f"Loading... [{percentage} out of 100]" # update loading status text
         loadingwindow.progress = percentage # update loading progress-bar value [0, 100]
@@ -12,7 +12,7 @@ def fakeTask(loadingwindow: AbstractLoadingWindow, percentage):
         return False # return False if the loading failed (maybe due to connection-error or other issues...)
 
 
-window = AbstractLoadingWindow()
+window = LoadingWindow()
 
 
 # Set the Size of the loading Window
@@ -31,7 +31,7 @@ window.setSplashArtPath("./LoadingWindow/default-loading-splash.png")
 window.setTasks([lambda p=i:fakeTask(window, p) for i in range(101)])
 
 # Set Tasks retries
-window.setRetries(3)
+window.setTaskRetries(3)
 
 
 window.exec_()

@@ -10,7 +10,7 @@ from .Threading import TaskThread
 
 
 
-class AbstractLoadingWindow(QWidget):
+class LoadingWindow(QWidget):
     __application: QApplication = None
 
     text: str = ""
@@ -24,7 +24,7 @@ class AbstractLoadingWindow(QWidget):
     appIconPath: str = os.path.join(os.path.dirname(__file__), "default-loading-icon.png")
     splashArtPath: str = os.path.join(os.path.dirname(__file__), "default-loading-splash.png")
 
-    retries: int = 3
+    taskRetries: int = 3
     preserveTime: int = 1
 
     width: int = 500
@@ -39,7 +39,7 @@ class AbstractLoadingWindow(QWidget):
     def __init__(self):
         self.__application = QApplication([*sys.argv, "--ignore-gpu-blacklist"])
 
-        super(AbstractLoadingWindow, self).__init__()
+        super(self.__class__, self).__init__()
 
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowTitle("LoadingWindow")
@@ -147,8 +147,8 @@ class AbstractLoadingWindow(QWidget):
         self.loadingTasks = tasks
 
 
-    def setRetries(self, retries):
-        self.retries = retries
+    def setTaskRetries(self, retries):
+        self.taskRetries = retries
 
 
     def setPreserveTime(self, t):
@@ -171,7 +171,7 @@ class AbstractLoadingWindow(QWidget):
         self.loadingThreadWorker = TaskThread(
             target=self.loadingTasks[self.loadingTaskIndex], 
             delay=0.1,
-            tries=self.retries, 
+            tries=self.taskRetries, 
             onFinished=self.loadNext
         ).start()
 

@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = "1.1.0"
+VERSION = "2.0.0"
 DESCRIPTION = "An easy to use LoadingWindow for Apps that needs pre-setups"
 
 # Setting up
@@ -17,8 +17,16 @@ setup(
     author="LeeFuuChang",
     author_email="a0962014248gg@gmail.com",
     description=DESCRIPTION,
-    long_description_content_type="text/markdown",
     long_description=long_description,
+    long_description_content_type="text/markdown",
+    license="MIT",
+    url="https://github.com/LeeFuuChang/PyPi-LoadingWindow",
+    project_urls={
+        # "Documentation": "",
+        # "Funding": "",
+        "Source": "https://github.com/LeeFuuChang/PyPi-LoadingWindow",
+        "Tracker": "https://github.com/LeeFuuChang/PyPi-LoadingWindow/issues",
+    },
     packages=find_packages(),
     install_requires=["PyQt5"],
     keywords=["python", "python3", "PyQt5", "Loading Window"],
