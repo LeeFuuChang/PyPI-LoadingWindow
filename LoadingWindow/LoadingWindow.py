@@ -2,6 +2,10 @@ from PyQt5.QtWidgets import QApplication, QWidget, QSizePolicy, QLabel, QProgres
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap
 
+import urllib.request
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
 import time
 import sys
 import os
@@ -21,8 +25,11 @@ class LoadingWindow(QWidget):
     loadingTaskIndex = -1
     loadingTasks = []
 
-    appIconPath: str = os.path.join(os.path.dirname(__file__), "default-loading-icon.png")
-    splashArtPath: str = os.path.join(os.path.dirname(__file__), "default-loading-splash.png")
+    appIcon: QIcon = None
+    defaultAppIconPath: str = os.path.join(os.path.dirname(__file__), "default-loading-icon.png")
+
+    splashArt: QPixmap = None
+    defaultSplashArtPath: str = os.path.join(os.path.dirname(__file__), "default-loading-splash.png")
 
     taskRetries: int = 3
     preserveTime: int = 1
@@ -64,6 +71,9 @@ class LoadingWindow(QWidget):
 
 
     def setupComponents(self):
+        self.appIcon = QIcon(self.defaultAppIconPath)
+        self.splashArt = QPixmap(self.defaultSplashArtPath)
+
         self.LoadingSplashArt = QLabel(self)
         self.LoadingSplashArt.setScaledContents(True)
         self.LoadingSplashArt.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
@@ -105,18 +115,33 @@ class LoadingWindow(QWidget):
 
 
     def setIconPath(self, path: str):
-        self.appIconPath = path
+        self.appIcon = QIcon(path)
+        self.updateStyle()
+
+
+    def setIconURL(self, url: str):
+        data = urllib.request.urlopen(url).read()
+        pmap = QPixmap()
+        pmap.loadFromData(data)
+        self.appIcon = QIcon(pmap)
         self.updateStyle()
 
 
     def setSplashArtPath(self, path: str):
-        self.splashArtPath = path
+        self.splashArt = QPixmap(path)
+        self.updateStyle()
+
+
+    def setSplashArtURL(self, url: str):
+        data = urllib.request.urlopen(url).read()
+        self.splashArt = QPixmap()
+        self.splashArt.loadFromData(data)
         self.updateStyle()
 
 
     def updateStyle(self):
-        if(self.appIconPath): self.setWindowIcon(QIcon(self.appIconPath))
-        if(self.splashArtPath): self.LoadingSplashArt.setPixmap(QPixmap(self.splashArtPath))
+        if(self.appIcon): self.setWindowIcon(self.appIcon)
+        if(self.splashArt): self.LoadingSplashArt.setPixmap(QPixmap(self.splashArt))
 
         geometry = [
             self.horizontalPadding,

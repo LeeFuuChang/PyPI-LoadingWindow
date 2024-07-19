@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 DESCRIPTION = "An easy to use LoadingWindow for Apps that needs pre-setups"
 
 # Setting up

@@ -24,8 +24,13 @@ window.setFontSize(10)
 # Set distance between the Window's Edge and the ProgressBar
 window.setPadding(30, 30)
 
+# Set Loading Icon
+window.setIconURL("https://via.placeholder.com/64x64") # from URL
+# window.setIconPath(LoadingWindow.defaultAppIconPath) # from path
+
 # Set Loading Splash Image
-window.setSplashArtPath("./LoadingWindow/default-loading-splash.png")
+window.setSplashArtURL("https://via.placeholder.com/500x300") # from URL
+# window.setSplashArtPath(LoadingWindow.defaultSplashArtPath) # from path
 
 # Set the tasks to load
 window.setTasks([lambda p=i:fakeTask(window, p) for i in range(101)])

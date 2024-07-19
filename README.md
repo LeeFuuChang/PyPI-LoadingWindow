@@ -99,12 +99,14 @@ LoadingWindow.setFrameRate(60)
 Set Loading Window's Icon
 > this only works after packing into an executable
 ```python
-LoadingWindow.setIconPath("./Path/To/Your/Icon")
+LoadingWindow.setIconURL("./URL/To/Your/Icon") # from URL
+LoadingWindow.setIconPath("./Path/To/Your/Icon") # from Path
 ```
 
 Set Loading Splash Image
 ```python
-LoadingWindow.setSplashArtPath("./Path/To/Your/Image")
+LoadingWindow.setSplashArtURL("./URL/To/Your/Image") # from URL
+LoadingWindow.setSplashArtPath("./Path/To/Your/Image") # from Path
 ```
 
 Set Tasks to load
