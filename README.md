@@ -6,8 +6,7 @@ Developed by LeeFuuChang © 2024
 
 ## Examples of How To Use
 
-Creating A LoadingWindow
-
+##### Creating A LoadingWindow
 ```python
 from LoadingWindow import LoadingWindow
 
@@ -15,8 +14,7 @@ window = LoadingWindow()
 window.exec_()
 ```
 
-Add Tasks to load
-
+##### Add Tasks to load
 ```python
 from LoadingWindow import LoadingWindow
 
@@ -71,55 +69,131 @@ def fakeTask(loadingwindow: LoadingWindow, ...):
 
 
 ## Useful APIs
-Set the Size of the loading Window
+
+### LoadingWindow
+
+##### Set the Size of the loading Window:
 ```python
 LoadingWindow.setSize(500, 300) # Width and Height
 ```
 
-Set the Height of the ProgressBar
-```python
-LoadingWindow.setBarHeight(30)
-```
-
-Set the Loading Status Text's FontSize
-```python
-LoadingWindow.setFontSize(10)
-```
-
-Set distance between the Window's Edge and the ProgressBar
+##### Set distance between the Window's Edge and the ProgressBar:
 ```python
 LoadingWindow.setPadding(30, 30) # Vertical and Horizontal
 ```
 
-Set Loading Window FrameRate
+##### Set the Height of the ProgressBar:
 ```python
-LoadingWindow.setFrameRate(60)
+LoadingWindow.setBarHeight(24)
 ```
 
-Set Loading Window's Icon
+##### Set the Loading Status Text's FontSize:
+```python
+LoadingWindow.setFontSize(10) # this will auto re-render
+# or
+LoadingWindow.progressBar.setFontSize(10) # this will auto re-render
+# or
+LoadingWindow.progressBar.fontSize = 10
+LoadingWindow.progressBar.updateStyle() # re-render
+```
+
+##### Set the Loading Status Text's FontColor:
+```python
+LoadingWindow.setFontColor("#000000") # this will auto re-render
+# or
+LoadingWindow.progressBar.setFontColor("#000000") # this will auto re-render
+# or
+LoadingWindow.progressBar.fontColor = "#000000"
+LoadingWindow.progressBar.updateStyle() # re-render
+```
+
+##### Set Loading Window's Icon:
 > this only works after packing into an executable
 ```python
-LoadingWindow.setIconURL("./URL/To/Your/Icon") # from URL
-LoadingWindow.setIconPath("./Path/To/Your/Icon") # from Path
+LoadingWindow.setIconPath("./Path/To/Your/Icon") # by path
+LoadingWindow.setIconURL("./URL/To/Your/Icon") # by url
 ```
 
-Set Loading Splash Image
+##### Set Loading Splash Image:
 ```python
-LoadingWindow.setSplashArtURL("./URL/To/Your/Image") # from URL
-LoadingWindow.setSplashArtPath("./Path/To/Your/Image") # from Path
+LoadingWindow.setSplashArtPath("./Path/To/Your/Image") # by path
+LoadingWindow.setSplashArtURL("./URL/To/Your/Image") # by url
 ```
 
-Set Tasks to load
+##### Set Loading Window FrameRate:
 ```python
-LoadingWindow.setTasks([])
+LoadingWindow.setFrameRate(30)
 ```
 
-Set Tasks retries
+##### Set How long (in seconds) the loading windows stays after all tasks completed:
+```python
+LoadingWindow.setPreserveTime(1)
+```
+
+##### Set Tasks to load:
+```python
+LoadingWindow.setTasks([func1, func2, ...])
+```
+
+##### Set Tasks retries:
 ```python
 LoadingWindow.setTaskRetries(3)
 ```
 
-Set How long (in seconds) the loading windows stays after all tasks completed
+### ProgressBar
+You can access `ProgressBar` instance by `LoadingWindow.progressBar`
+
+##### Set the Loading Status Text
+```
+ProgressBar.setText("Loading . . .") # this will auto re-render
+# or
+LoadingWindow.progressBar.text = "Loading . . ."
+LoadingWindow.progressBar.updateStyle() # re-render
+```
+
+##### Set the Loading Progress Value
+```
+ProgressBar.setProgress(0) # 0 ~ 100 # this will auto re-render
+# or
+LoadingWindow.progressBar.progress = 0 # 0 ~ 100
+LoadingWindow.progressBar.updateStyle() # re-render
+```
+
+##### Set the Padding of ProgressBar Text
+> this changes including status text and progress text
+```
+ProgressBar.setPadding(0, 16) # Vertical and Horizontal # this will auto re-render
+# or
+LoadingWindow.progressBar.padding = (0, 16) # Vertical and Horizontal
+LoadingWindow.progressBar.updateStyle() # re-render
+```
+
+##### Set the ProgressBar Text's FontSize:
 ```python
-LoadingWindow.setPreserveTime(1)
+ProgressBar.setFontSize(10) # this will auto re-render
+# or
+LoadingWindow.setFontSize(10) # this will auto re-render
+# or
+LoadingWindow.progressBar.fontSize = 10
+LoadingWindow.progressBar.updateStyle() # re-render
+```
+
+##### Set the ProgressBar Text's FontColor:
+```python
+ProgressBar.setFontColor("#000000") # this will auto re-render
+# or
+LoadingWindow.setFontColor("#000000") # this will auto re-render
+# or
+LoadingWindow.progressBar.fontColor = "#000000"
+LoadingWindow.progressBar.updateStyle() # re-render
+```
+
+##### Set the ProgressBar filled area's Color
+```python
+ProgressBar.setFilledColor("#69ca67")
+```
+
+##### Set the ProgressBar track's Color
+```python
+ProgressBar.setBackgroundColor("#ffffff")
 ```

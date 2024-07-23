@@ -1,6 +1,8 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QSizePolicy, QLabel, QProgressBar
+from PyQt5.QtWidgets import QApplication, QWidget, QSizePolicy, QLabel, QFrame
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap
+
+from typing import Tuple, List, Callable
 
 import urllib.request
 import ssl
@@ -14,13 +16,167 @@ from .Threading import TaskThread
 
 
 
+
+
+class ProgressBar(QFrame):
+    text: str = ""
+    progress: int = 0
+
+    padding: Tuple[int, int] = (0, 16)
+
+    fontSize: int = 10
+    fontColor: str = "#000000"
+
+    filledColor: str = "#69ca67"
+    backgroundColor: str = "#ffffff"
+
+
+    def __init__(self, parent):
+        super(self.__class__, self).__init__(parent)
+
+        self.setupComponents()
+
+        self.updateStyle()
+
+
+    def setText(self, text: str):
+        """
+        Set the Loading Status Text
+        ```
+        ProgressBar.setText("Loading . . .") # this will auto re-render
+        # or
+        LoadingWindow.progressBar.text = "Loading . . ."
+        LoadingWindow.progressBar.updateStyle() # re-render
+        ```
+        """
+        self.text = text
+        self.updateStyle()
+
+
+    def setProgress(self, progress: int):
+        """
+        Set the Loading Progress Value
+        ```
+        ProgressBar.setProgress(0) # 0 ~ 100 # this will auto re-render
+        # or
+        LoadingWindow.progressBar.progress = 0 # 0 ~ 100
+        LoadingWindow.progressBar.updateStyle() # re-render
+        ```
+        """
+        self.progress = progress
+        self.updateStyle()
+
+
+    def setPadding(self, v: int, h: int):
+        """
+        Set the Padding of ProgressBar Text
+        > this changes including status text and progress text
+        ```
+        ProgressBar.setPadding(0, 16) # Vertical and Horizontal # this will auto re-render
+        # or
+        LoadingWindow.progressBar.padding = (0, 16) # Vertical and Horizontal
+        LoadingWindow.progressBar.updateStyle() # re-render
+        ```
+        """
+        self.padding = (v, h)
+        self.updateStyle()
+
+
+    def setFontSize(self, fontSize: int):
+        """
+        Set the ProgressBar Text's FontSize:
+        ```python
+        ProgressBar.setFontSize(10) # this will auto re-render
+        # or
+        LoadingWindow.setFontSize(10) # this will auto re-render
+        # or
+        LoadingWindow.progressBar.fontSize = 10
+        LoadingWindow.progressBar.updateStyle() # re-render
+        ```
+        """
+        self.fontSize = fontSize
+        self.updateStyle()
+
+
+    def setFontColor(self, fontColor: str):
+        """
+        Set the ProgressBar Text's FontColor:
+        ```python
+        ProgressBar.setFontColor("#000000") # this will auto re-render
+        # or
+        LoadingWindow.setFontColor("#000000") # this will auto re-render
+        # or
+        LoadingWindow.progressBar.fontColor = "#000000"
+        LoadingWindow.progressBar.updateStyle() # re-render
+        ```
+        """
+        self.fontColor = fontColor
+        self.updateStyle()
+
+
+    def setFilledColor(self, filledColor: str):
+        """
+        Set the ProgressBar filled area's Color
+        ```python
+        ProgressBar.setFilledColor("#69ca67")
+        ```
+        """
+        self.filledColor = filledColor
+        self.updateStyle()
+
+
+    def setBackgroundColor(self, backgroundColor: str):
+        """
+        Set the ProgressBar track's Color
+        ```python
+        ProgressBar.setBackgroundColor("#ffffff")
+        ```
+        """
+        self.backgroundColor = backgroundColor
+        self.updateStyle()
+
+
+    def setupComponents(self):
+        self.filledArea = QFrame(self)
+
+        self.statusLabel = QLabel(self)
+        self.statusLabel.setText(self.text)
+        self.statusLabel.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        self.progressLabel = QLabel(self)
+        self.progressLabel.setText(f"{self.progress}%")
+        self.progressLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+
+    def updateStyle(self):
+        self.setStyleSheet(f"background-color: {self.backgroundColor}")
+
+        self.filledArea.setGeometry(0, 0, round(self.width()*self.progress/100), self.height())
+        self.filledArea.setStyleSheet(f"background-color: {self.filledColor}")
+
+        self.statusLabel.setText(self.text)
+        self.statusLabel.font().setPointSize(self.fontSize)
+        self.statusLabel.setGeometry(0, 0, self.width(), self.height())
+        self.statusLabel.setStyleSheet(f"color: {self.fontColor}; padding: {self.padding[0]}px {self.padding[1]}px; background-color: transparent")
+
+        self.progressLabel.setText(f"{self.progress}%")
+        self.progressLabel.font().setPointSize(self.fontSize)
+        self.progressLabel.setGeometry(0, 0, self.width(), self.height())
+        self.progressLabel.setStyleSheet(f"color: {self.fontColor}; padding: {self.padding[0]}px {self.padding[1]}px; background-color: transparent")
+
+        self.repaint()
+
+
+
+
+
 class LoadingWindow(QWidget):
     __application: QApplication = None
 
     text: str = ""
     progress: int = 0
 
-    displayLoadingStatusSignal = pyqtSignal()
+    updateStatusSignal = pyqtSignal()
 
     loadingTaskIndex = -1
     loadingTasks = []
@@ -36,11 +192,8 @@ class LoadingWindow(QWidget):
 
     width: int = 500
     height: int = 300
-    barHeight: int = 30
-    verticalPadding: int = 30
-    horizontalPadding: int = 30
-    fontSize: int = 10
-    fontColor: str = "#000000"
+    padding: Tuple[int, int] = (32, 32)
+    barHeight: int = 24
 
 
     def __init__(self):
@@ -55,71 +208,90 @@ class LoadingWindow(QWidget):
 
         self.updateStyle()
 
-        self.displayLoadingStatusSignal.connect(self.displayLoadingStatus)
+        self.updateStatusSignal.connect(self.updateStatus)
 
         self.loadingTimer = QTimer(self)
-        self.loadingTimer.timeout.connect(self.displayLoadingStatusSignal.emit)
+        self.loadingTimer.timeout.connect(self.updateStatusSignal.emit)
         self.loadingTimer.start()
         self.setFrameRate(30)
 
 
-    def exec_(self):
-        self.show()
-        self.loadNext()
-        self.__application.exec_()
-        del self.__application
-
-
-    def setupComponents(self):
-        self.appIcon = QIcon(self.defaultAppIconPath)
-        self.splashArt = QPixmap(self.defaultSplashArtPath)
-
-        self.LoadingSplashArt = QLabel(self)
-        self.LoadingSplashArt.setScaledContents(True)
-        self.LoadingSplashArt.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-
-        self.LoadingProgress = QProgressBar(self)
-        self.LoadingProgress.setRange(0, 100)
-        self.LoadingProgress.setTextVisible(False)
-        self.LoadingProgress.setOrientation(Qt.Horizontal)
-
-        self.LoadingStatus = QLabel(self)
-        self.LoadingStatus.setText(self.text)
-        self.LoadingStatus.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
-        self.ProgressLabel = QLabel(self)
-        self.ProgressLabel.setText(f"{self.progress}%")
-        self.ProgressLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-
-
     def setSize(self, width: int, height: int):
+        """
+        Set the Size of the loading Window:
+        ```python
+        LoadingWindow.setSize(500, 300) # Width and Height
+        ```
+        """
         self.width = width
         self.height = height
         self.updateStyle()
 
 
+    def setPadding(self, v: int, h: int):
+        """
+        Set distance between the Window's Edge and the ProgressBar:
+        ```python
+        LoadingWindow.setPadding(30, 30) # Vertical and Horizontal
+        ```
+        """
+        self.padding = (v, h)
+        self.updateStyle()
+
+
     def setBarHeight(self, barHeight: int):
+        """
+        Set the Height of the ProgressBar:
+        ```python
+        LoadingWindow.setBarHeight(24)
+        ```
+        """
         self.barHeight = barHeight
         self.updateStyle()
 
 
     def setFontSize(self, fontSize: int):
-        self.fontSize = fontSize
+        """
+        Set the Loading Status Text's FontSize:
+        ```python
+        LoadingWindow.setFontSize(10)
+        ```
+        """
+        self.progressBar.fontSize = fontSize
         self.updateStyle()
 
 
-    def setPadding(self, v: int, h: int):
-        self.verticalPadding = v
-        self.horizontalPadding = h
+    def setFontColor(self, fontColor: str):
+        """
+        Set the Loading Status Text's FontColor:
+        ```python
+        LoadingWindow.setFontColor("#000000")
+        ```
+        """
+        self.progressBar.fontColor = fontColor
         self.updateStyle()
 
 
     def setIconPath(self, path: str):
+        """
+        Set Loading Window's Icon (By file path):
+        >> this only works after packing into an executable
+        ```python
+        LoadingWindow.setIconPath("./Path/To/Your/Icon")
+        ```
+        """
         self.appIcon = QIcon(path)
         self.updateStyle()
 
 
     def setIconURL(self, url: str):
+        """
+        Set Loading Window's Icon (By image url):
+        > this only works after packing into an executable
+        ```python
+        LoadingWindow.setIconURL("./URL/To/Your/Icon")
+        ```
+        """
         data = urllib.request.urlopen(url).read()
         pmap = QPixmap()
         pmap.loadFromData(data)
@@ -128,70 +300,108 @@ class LoadingWindow(QWidget):
 
 
     def setSplashArtPath(self, path: str):
+        """
+        Set Loading Splash Image (By file path):
+        ```python
+        LoadingWindow.setSplashArtPath("./Path/To/Your/Image")
+        ```
+        """
         self.splashArt = QPixmap(path)
         self.updateStyle()
 
 
     def setSplashArtURL(self, url: str):
+        """
+        Set Loading Splash Image (By image url):
+        ```python
+        LoadingWindow.setSplashArtURL("./URL/To/Your/Image")
+        ```
+        """
         data = urllib.request.urlopen(url).read()
         self.splashArt = QPixmap()
         self.splashArt.loadFromData(data)
         self.updateStyle()
 
 
-    def updateStyle(self):
-        if(self.appIcon): self.setWindowIcon(self.appIcon)
-        if(self.splashArt): self.LoadingSplashArt.setPixmap(QPixmap(self.splashArt))
-
-        geometry = [
-            self.horizontalPadding,
-            self.height - self.verticalPadding - self.barHeight,
-            self.width - self.horizontalPadding*2,
-            self.barHeight
-        ]
-
-        self.LoadingSplashArt.setGeometry(0, 0, self.width, self.height)
-        self.LoadingProgress.setGeometry(*geometry)
-        self.LoadingStatus.setGeometry(*geometry)
-        self.ProgressLabel.setGeometry(*geometry)
-
-        self.LoadingStatus.font().setPointSize(self.fontSize)
-        self.ProgressLabel.font().setPointSize(self.fontSize)
-
-        self.LoadingStatus.setStyleSheet(f"color: {self.fontSize}; padding:0 {int(self.horizontalPadding/2)}px;")
-        self.ProgressLabel.setStyleSheet(f"color: {self.fontSize}; padding:0 {int(self.horizontalPadding/2)}px;")
-
-
-    def setFrameRate(self, frameRate):
+    def setFrameRate(self, frameRate: int):
+        """
+        Set Loading Window FrameRate:
+        ```python
+        LoadingWindow.setFrameRate(30)
+        ```
+        """
         self.loadingTimer.setInterval(round(1000/frameRate))
 
 
-    def setTasks(self, tasks):
+    def setPreserveTime(self, t: int):
+        """
+        Set How long (in seconds) the loading windows stays after all tasks completed:
+        ```python
+        LoadingWindow.setPreserveTime(1)
+        ```
+        """
+        self.preserveTime = max(0, t)
+
+
+    def setTasks(self, tasks: List[Callable]):
+        """
+        Set Tasks to load:
+        ```python
+        LoadingWindow.setTasks([func1, func2, ...])
+        ```
+        """
         if(self.loadingTaskIndex != -1):
             raise AssertionError("Cannot set tasks after loading process started!")
         self.loadingTasks = tasks
 
 
-    def setTaskRetries(self, retries):
+    def setTaskRetries(self, retries: int):
+        """
+        Set Tasks retries:
+        ```python
+        LoadingWindow.setTaskRetries(3)
+        ```
+        """
+        if(self.loadingTaskIndex != -1):
+            raise AssertionError("Cannot set task retries after loading process started!")
         self.taskRetries = retries
 
 
-    def setPreserveTime(self, t):
-        self.preserveTime = max(0, t)
+    def setupComponents(self):
+        self.appIcon = QIcon(self.defaultAppIconPath)
+        self.splashArt = QPixmap(self.defaultSplashArtPath)
+
+        self.splashArtLabel = QLabel(self)
+        self.splashArtLabel.setScaledContents(True)
+        self.splashArtLabel.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+
+        self.progressBar = ProgressBar(self)
 
 
-    def displayLoadingStatus(self):
-        self.LoadingStatus.setText(self.text)
-        self.LoadingStatus.repaint()
-        self.ProgressLabel.setText(f"{self.progress}%")
-        self.ProgressLabel.repaint()
-        self.LoadingProgress.setValue(self.progress)
-        self.LoadingProgress.repaint()
+    def updateStyle(self):
+        if(self.appIcon): self.setWindowIcon(self.appIcon)
+        if(self.splashArt): self.splashArtLabel.setPixmap(QPixmap(self.splashArt))
+
+        self.splashArtLabel.setGeometry(0, 0, self.width, self.height)
+
+        self.progressBar.setGeometry(
+            self.padding[1],
+            self.height - self.padding[0] - self.barHeight,
+            self.width - self.padding[1]*2,
+            self.barHeight,
+        )
+        self.progressBar.updateStyle()
+
+
+    def updateStatus(self):
+        self.progressBar.text = self.text
+        self.progressBar.progress = self.progress
+        self.progressBar.updateStyle()
 
 
     def loadNext(self):
         self.loadingTaskIndex += 1
-        self.displayLoadingStatusSignal.emit()
+        self.updateStatusSignal.emit()
         if(self.loadingTaskIndex >= len(self.loadingTasks)): return self.loadFinished()
         self.loadingThreadWorker = TaskThread(
             target=self.loadingTasks[self.loadingTaskIndex], 
@@ -219,6 +429,14 @@ class LoadingWindow(QWidget):
             int((QApplication.primaryScreen().size().width() - self.width) / 2), 
             int((QApplication.primaryScreen().size().height() - self.height) / 2)
         )
+
+
+    def exec_(self):
+        self.show()
+        self.loadNext()
+        self.__application.exec_()
+        del self.__application
+
 
 
 
