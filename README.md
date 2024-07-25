@@ -2,7 +2,19 @@
 
 Hit the ⭐ at our [repo](https://github.com/LeeFuuChang/PyPi-LoadingWindow) if this helped!!!
 
+[![PyPI Downloads](https://img.shields.io/pypi/dm/LoadingWindow?label=PyPI%20downloads)](https://pypi.org/project/LoadingWindow/) [![Downloads](https://static.pepy.tech/badge/LoadingWindow)](http://pepy.tech/project/LoadingWindow) [![PyPI Latest Release](https://img.shields.io/pypi/v/LoadingWindow)](https://pypi.org/project/LoadingWindow/) [![License - MIT](https://img.shields.io/pypi/l/LoadingWindow)](https://github.com/LeeFuuChang/PyPi-LoadingWindow/blob/main/LICENSE)
+
 Developed by LeeFuuChang © 2024
+
+## Install
+```sh
+pip3 install --upgrade LoadingWindow
+```
+
+## Quick Demo
+```sh
+python3 -m LoadingWindow
+```
 
 ## Examples of How To Use
 
