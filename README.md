@@ -1,8 +1,10 @@
 # LoadingWindow
 
-Hit the ⭐ at our [repo](https://github.com/LeeFuuChang/PyPi-LoadingWindow) if this helped!!!
+<h1 align="center"><img src="demo.png" width="300"></h1>
 
-[![PyPI Downloads](https://img.shields.io/pypi/dm/LoadingWindow?label=PyPI%20downloads)](https://pypi.org/project/LoadingWindow/) [![Downloads](https://static.pepy.tech/badge/LoadingWindow)](http://pepy.tech/project/LoadingWindow) [![PyPI Latest Release](https://img.shields.io/pypi/v/LoadingWindow)](https://pypi.org/project/LoadingWindow/) [![License - MIT](https://img.shields.io/pypi/l/LoadingWindow)](https://github.com/LeeFuuChang/PyPi-LoadingWindow/blob/main/LICENSE)
+Hit the ⭐ at our [repo](https://github.com/LeeFuuChang/PyPI-LoadingWindow) if this helped!!!
+
+[![PyPI Downloads](https://img.shields.io/pypi/dm/LoadingWindow?label=PyPI%20downloads)](https://pypi.org/project/LoadingWindow/) [![Downloads](https://static.pepy.tech/badge/LoadingWindow)](http://pepy.tech/project/LoadingWindow) [![PyPI Latest Release](https://img.shields.io/pypi/v/LoadingWindow)](https://pypi.org/project/LoadingWindow/) [![License - MIT](https://img.shields.io/pypi/l/LoadingWindow)](https://github.com/LeeFuuChang/PyPI-LoadingWindow/blob/main/LICENSE)
 
 Developed by LeeFuuChang © 2024
 
@@ -156,7 +158,7 @@ LoadingWindow.setTaskRetries(3)
 You can access `ProgressBar` instance by `LoadingWindow.progressBar`
 
 ##### Set the Loading Status Text
-```
+```python
 ProgressBar.setText("Loading . . .") # this will auto re-render
 # or
 LoadingWindow.progressBar.text = "Loading . . ."
@@ -164,7 +166,7 @@ LoadingWindow.progressBar.updateStyle() # re-render
 ```
 
 ##### Set the Loading Progress Value
-```
+```python
 ProgressBar.setProgress(0) # 0 ~ 100 # this will auto re-render
 # or
 LoadingWindow.progressBar.progress = 0 # 0 ~ 100
@@ -173,7 +175,7 @@ LoadingWindow.progressBar.updateStyle() # re-render
 
 ##### Set the Padding of ProgressBar Text
 > this changes including status text and progress text
-```
+```python
 ProgressBar.setPadding(0, 16) # Vertical and Horizontal # this will auto re-render
 # or
 LoadingWindow.progressBar.padding = (0, 16) # Vertical and Horizontal
